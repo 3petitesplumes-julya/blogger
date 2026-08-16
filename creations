@@ -1,2 +1,0 @@
-gh api -X DELETE /repos/3petitesplumes-julya/blogger/contents/creations
--f message="Supprimer le fichier root 'creations' pour créer le dossier creations/"
