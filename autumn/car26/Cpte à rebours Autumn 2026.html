@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compte à rebours Automne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lucida Handwriting', 'Bradley Hand ITC', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 80vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 734px;
+            height: 909px;
+            background-image: url('https://github.com/3petitesplumes-julya/blogger/blob/main/autumn/car26/fond_car_aut26.jpg?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .countdown-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 90%;
+        }
+
+        h1 {
+            color: #FBF4D7;
+            font-size: 1.7em;
+            margin-bottom: 5px;
+            font-weight: 500;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+        }
+
+        .event-date {
+            color: #FFE173;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: 400;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.2); /* Fond légèrement transparent */
+			backdrop-filter: blur(5px); /* Effet de flou pour le fond */
+            border-radius: 30px;
+            padding: 15px 15px;
+            min-width: 40px;
+            box-shadow:0;
+            transition: transform 0.3s ease;
+        }
+
+        .time-unit:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .time-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #5C371D;
+            display: block;
+            line-height: 1;
+            text-shadow: 1px 1px 2px rgba(251, 244, 215, 0.8);
+        }
+
+        .time-label {
+            font-size: 0.7em;
+			font-weight: bold
+            color: #5c371d;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: block;
+            letter-spacing: 1px;
+			text-shadow: 1px 1px 2px rgba(251, 244, 215, 0.8);
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.3em;
+            color: #c41e3a;
+            font-weight: 700;
+            display: none;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .message.show {
+            display: block;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pour les petits écrans */
+        @media (max-width: 700px) {
+            .container {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 7/10;
+            }
+
+            h1 {
+                font-size: 1.2em;
+            }
+
+            .time-unit {
+                min-width: 60px;
+                padding: 10px 8px;
+            }
+
+            .time-value {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="countdown-container">
+            <h1> 🍁L'équinoxe d'automne aura lieu 🍁</h1>
+            <div class="event-date">dans :</div>
+            
+            <div class="countdown">
+                <div class="time-unit">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">Jours</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Heures</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Secondes</span>
+                </div>
+            </div>
+
+            <div class="message" id="message">
+                🍁 C'est l'automne ! 🍂
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Date cible : 23 septembre 2026 à 2h05
+        const targetDate = new Date(2026, 8, 23, 2, 5, 0).getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.querySelector('.countdown').style.display = 'none';
+                document.getElementById('message').classList.add('show');
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        // Mise à jour immédiate puis toutes les secondes
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
