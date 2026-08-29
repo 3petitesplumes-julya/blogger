@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>stars_lake</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      background: transparent;
+      overflow: hidden; /* Supprime les barres de défilement */
+      width: 760px;
+      height: 586px;
+    }
+    
+    .container {
+      position: relative;
+      width: 760px;
+      height: 586px;
+    }
+    
+    .frame-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 760px;
+      height: 586px;
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+    }
+    
+    .video-wrapper {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 760px;
+      height: px;
+      z-index: 1;
+    }
+    
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img 
+      src="https://github.com/3petitesplumes-julya/blogger/blob/main/creations/stars_lake/cadre_lake.png?raw=true" 
+      alt="Cadre" 
+      class="frame-image"
+    >
+    
+    <div class="video-wrapper">
+      <video autoplay loop muted playsinline>
+        <source src="https://github.com/3petitesplumes-julya/blogger/blob/38eed500e1b924e278c6a5ff6d675474e84ff158/creations/stars_lake/star_lake.mp4?raw=true" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</body>
+</html>
