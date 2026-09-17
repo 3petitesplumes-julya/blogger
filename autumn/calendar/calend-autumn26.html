@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éphéméride autumn 2026</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Georgia';
+	  background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      position: relative;
+      width: 300px; /* Ajustez si nécessaire */
+      height: 400px; /* Ajustez si nécessaire */
+      overflow: hidden; /* Pour s'assurer que rien ne dépasse */
+    }
+
+    .bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .cadre {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* important */
+      z-index: 3;
+    }
+
+    .calendar {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%; /* ou une largeur fixe si tu préfères */
+      background: rgba(0, 0, 0, 0);
+      padding: 0.5rem;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      z-index: 2;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.5);
+    }
+	
+    .day {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #a76203;
+    }
+
+    .date {
+      font-size: 1.6rem;
+	  margin-top: 0.3rem;
+      color: #681605;
+	  text-shadow: 0 1px 3px rgba(3,64,82,1);
+    }
+
+    .saint {
+      font-size: 1.2rem; /* Taille normale pour le saint */
+      font-style: normal; /* Pas d'italique par défaut, sera appliqué si besoin */
+      color: #e6772a; /* Couleur rose pour les saints/événements */
+    }
+
+    .ferie {
+      color: #e01f01 !important; /* Rouge pour les jours fériés */
+      font-weight: bold;
+    }
+
+    .saison {
+        font-weight: normal;
+        color: #09896B; /* Vert plus soutenu pour les saisons */
+    }
+	
+	/* Conteneur pour effet magique */
+    .saint {
+    position: relative;
+    display: inline-block;
+    }
+
+    /* Poussières de fée */
+    .saint.ferie::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -10px;
+    width: 120%;
+    height: 120%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255,255,170,0.9) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,237,221,0.8) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,230,187,0.7) 1px, transparent 1px);
+    background-size: 15px 15px, 25px 25px, 20px 20px;
+    animation: sparkleMove 5s linear infinite;
+    opacity: 0.8;
+    }
+
+    /* Animation douce */
+    @keyframes sparkleMove {
+    0% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+   }
+    50% {
+    transform: translateY(-5px) translateX(3px);
+    opacity: 1;
+   }
+   100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.6;
+   }
+    }
+
+    .evenement {
+        font-size: 1.1rem; /* Taille plus grande pour les événements */
+        display: block; /* Pour que le saut de ligne fonctionne */
+        margin-top: 0.2rem;
+        font-style: italic;
+        font-weight: bold;		/* Les événements peuvent être en italique */
+    }
+
+    /* ⭐ NOUVEAU : Style pour les dimanches en rouge */
+    .dimanche-rouge {
+        color: #e01f01 !important; /* Utilise la même couleur rouge que les jours fériés */
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="https://github.com/3petitesplumes-julya/blogger/blob/main/autumn/calendar/calend-video.mp4?raw=true" type="video/mp4">
+    Votre navigateur ne supporte pas la vidéo.
+  </video>
+
+  <img src="https://github.com/3petitesplumes-julya/blogger/blob/main/autumn/calendar/cadre.png?raw=true" class="cadre">
+
+  <div class="calendar">
+    <div class="day" id="dayName"></div>
+    <div class="date" id="dateText"></div>
+    <div class="saint" id="saintName"></div>
+  </div>
+
+</div>
+
+  <script>
+    const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+    // Ajout des saints et événements pour le reste de l'année 2026
+    const saints = {
+      "05-10": "Fleur<br/>Fête des grands-mères", // Généralement le premier dimanche d'octobre
+      "01-03": "Aubin",
+      "02-03": "Chad",
+      "03-03": "Guénolé",
+      "04-03": "Casimir<br/>Mardi gras 🎭",
+      "05-03": "Olive<br/>Cendres",
+      "06-03": "Colette",
+      "07-03": "Félicité",
+      "08-03": "Humphrey",
+      "09-03": "Françoise",
+      "10-03": "Leslie",
+      "11-03": "Rosine",
+      "12-03": "Justine",
+      "13-03": "Rodrigue",
+      "14-03": "Mathilde",
+      "15-03": "William",
+      "16-03": "Bénédicte",
+      "17-03": "Patrick",
+      "18-03": "Cyrille",
+      "19-03": "Joseph",
+      "20-03": "Claudine",
+      "21-03": "Clémence",
+      "22-03": "Léa",
+      "23-03": "Victorien",
+      "24-03": "Oscar",
+      "25-03": "Humbert",
+      "26-03": "Lara",
+      "27-03": "Rupert",
+      "28-03": "Gontran",
+      "29-03": "Gwladys",
+      "30-03": "Amédée",
+      "31-03": "Benjamin",
+      "01-04": "Hugues",
+      "02-04": "Sandrine",
+      "03-04": "Richard",
+      "04-04": "Isidore",
+      "05-04": "Irène<br>Pâques🥚🔔",
+      "06-04": "Célestin<br/>Lundi de Pâques",
+      "07-04": "Baptiste",
+      "08-04": "Julie",
+      "09-04": "Gauthier",
+      "10-04": "Térence",
+      "11-04": "Stanislas",
+      "12-04": "Jules",
+      "13-04": "Ida",
+      "14-04": "Maxime",
+      "15-04": "Anastasia",
+      "16-04": "Nadine",
+      "17-04": "Anicet",
+      "18-04": "Parfait",
+      "19-04": "Emma",
+      "20-04": "Odette",
+      "21-04": "Anselme",
+      "22-04": "Alexandre",
+      "23-04": "Georges",
+      "24-04": "Fidèle",
+      "25-04": "Marc",
+      "26-04": "Clarence",
+      "27-04": "Zita",
+      "28-04": "Valérie",
+      "29-04": "Ava",
+      "30-04": "Robert",
+      "01-05": "Jérémy<br/>Fête du Travail",
+      "02-05": "Boris",
+      "03-05": "Philippe",
+      "04-05": "Sylvain",
+      "05-05": "Judith",
+      "06-05": "Prudence",
+      "07-05": "Gisèle",
+      "08-05": "Ilona<br/>Victoire 1945",
+      "09-05": "Pâcome",
+      "10-05": "Solange",
+      "11-05": "Estelle",
+      "12-05": "Achille",
+      "13-05": "Rolande",
+      "14-05": "Matthias<br/>Ascension",
+      "15-05": "Denise",
+      "16-05": "Honoré",
+      "17-05": "Pascal",
+      "18-05": "Eric",
+      "19-05": "Yves",
+      "20-05": "Bernardin",
+      "21-05": "Constentin",
+      "22-05": "Emile",
+      "23-05": "Didier",
+      "24-05": "Donatien<br/>Pentecôte",
+      "25-05": "Sophie<br/>Lundi de Pentecôte",
+      "26-05": "Bérangère",
+      "27-05": "Augustin",
+      "28-05": "Germain",
+      "29-05": "Ursula",
+      "30-05": "Ferdinand",
+      "31-05": "Maëlis<br/>Fête des Mères",
+      "01-06": "Justin",
+      "02-06": "Blandine",
+      "03-06": "Kévin",
+      "04-06": "Clothilde",
+      "05-06": "Igor",
+      "06-06": "Norbert",
+      "07-06": "Gilbert",
+      "08-06": "Médard",
+      "09-06": "Diane",
+      "10-06": "Landry",
+      "11-06": "Barnabé",
+      "12-06": "Guy",
+      "13-06": "Antoine",
+      "14-06": "Elisée",
+      "15-06": "Germaine",
+      "16-06": "Régis",
+      "17-06": "Hervé",
+      "18-06": "Léonce",
+      "19-06": "Romuald",
+      "20-06": "Silvère",
+      "21-06": "Rodolphe, Fête des Pères",
+      "22-06": "Alban",
+      "23-06": "Audrey",
+      "24-06": "Jean-Baptiste",
+      "25-06": "Eléonore",
+      "26-06": "Maxence",
+      "27-06": "Fernand",
+      "28-06": "Irénée",
+      "29-06": "Pierre, Paul",
+      "30-06": "Martial",
+	  "01-07": "Thierry",
+      "02-07": "Martinien",
+      "03-07": "Thomas",
+      "04-07": "Florent",
+      "05-07": "Zoé",
+      "06-07": "Mariette",
+      "07-07": "Raoul",
+      "08-07": "Thibaut",
+      "09-07": "Amandine",
+      "10-07": "Ulrich",
+      "11-07": "Benoît",
+      "12-07": "Olivier",
+      "13-07": "Henri",
+      "14-07": "Camille",
+      "15-07": "Donald",
+      "16-07": "Elvire",
+      "17-07": "Hedwige",
+      "18-07": "Frédéric",
+      "19-07": "Arsène",
+      "20-07": "Elie",
+      "21-07": "Victor",
+      "22-07": "Madeleine",
+      "23-07": "Brigitte",
+      "24-07": "Christine",
+      "25-07": "Jacques",
+      "26-07": "Anne",
+      "27-07": "Nathalie",
+      "28-07": "Samson",
+      "29-07": "Marthe",
+      "30-07": "Juliette",
+      "31-07": "Ignace",
+      "01-08": "Alphonse",
+      "02-08": "Julien",
+      "03-08": "Lydie",
+      "04-08": "Jean-Marie",
+      "05-08": "Abel",
+      "06-08": "Sauveur",
+      "07-08": "Gaëtan",
+      "08-08": "Dominique",
+      "09-08": "Amour",
+      "10-08": "Laurent",
+      "11-08": "Suzanne",
+      "12-08": "Chantal",
+      "13-08": "Hippolyte",
+      "14-08": "Maximilien",
+      "15-08": "Marie<br>Assomption",
+      "16-08": "Armel",
+      "17-08": "Hyacinthe",
+      "18-08": "Hélène",
+      "19-08": "Eudes",
+      "20-08": "Bernard",
+      "21-08": "Christophe",
+      "22-08": "Fabrice",
+      "23-08": "Rose",
+      "24-08": "Barthélemy",
+      "25-08": "Louis",
+      "26-08": "Natacha",
+      "27-08": "Monique",
+      "28-08": "Vivien",
+      "29-08": "Sabine",
+      "30-08": "Fiacre",
+      "31-08": "Aristide",
+      "01-09": "Gilles",
+      "02-09": "Ingrid",
+      "03-09": "Grégoire",
+      "04-09": "Rosalie",
+      "05-09": "Raïssa",
+      "06-09": "Bertrand",
+      "07-09": "Reine",
+      "08-09": "Adrien",
+      "09-09": "Alain",
+      "10-09": "Inès",
+      "11-09": "Théodora",
+      "12-09": "Apollinaire",
+      "13-09": "Marcellin",
+      "14-09": "Cyprien",
+      "15-09": "Roland",
+      "16-09": "Edith",
+      "17-09": "Renaud",
+      "18-09": "Nadège",
+      "19-09": "Emilie",
+      "20-09": "Davy",
+      "21-09": "Matthieu",
+      "22-09": "Maurice",
+      "23-09": "Constant",
+      "24-09": "Anatole",
+      "25-09": "Solène",
+      "26-09": "Côme",
+      "27-09": "Vincent",
+      "28-09": "Lucas",
+      "29-09": "Michel",
+      "30-09": "Jérôme",
+      "01-10": "Thérèse",
+      "02-10": "Ange",
+      "03-10": "Gérard",
+      "04-10": "Aurore",
+      "05-10": "Fleur<br/>Fête des grands-Pères", // Généralement le premier dimanche d'octobre
+      "06-10": "Bruno",
+      "07-10": "Serge",
+      "08-10": "Pélagie",
+      "09-10": "Denis",
+      "10-10": "Hugo",
+      "11-10": "Firmin",
+      "12-10": "Wilfried",
+      "13-10": "Géraud",
+      "14-10": "Enora",
+      "15-10": "Aurélie",
+      "16-10": "Marguerite",
+      "17-10": "Astrid",
+      "18-10": "Luc",
+      "19-10": "René",
+      "20-10": "Adeline",
+      "21-10": "Céline",
+      "22-10": "Elodie",
+      "23-10": "Mélodie",
+      "24-10": "Florentine",
+      "25-10": "Crépin",
+      "26-10": "Dimitri",
+      "27-10": "Emeline",
+      "28-10": "Simon",
+      "29-10": "Narcisse",
+      "30-10": "Maéva",
+      "31-10": "Quentin<br/>Halloween 🎃",
+      "01-11": "Toussaint",
+      "02-11": "Victorine<br/>Défunts",
+      "03-11": "Hubert",
+      "04-11": "Charles",
+      "05-11": "Sylvie",
+      "06-11": "Léonard",
+      "07-11": "Carine",
+      "08-11": "Geoffroy",
+      "09-11": "Théodore",
+      "10-11": "Léon",
+      "11-11": "Martin<br/>Armistice 🕊️",
+      "12-11": "Christian",
+      "13-11": "Brice",
+      "14-11": "Sidonie",
+      "15-11": "Albert",
+      "16-11": "Peggy",
+      "17-11": "Élisabeth",
+      "18-11": "Aude",
+      "19-11": "Tanguy",
+      "20-11": "Edmond",
+      "21-11": "Rufus",
+      "22-11": "Cécile",
+      "23-11": "Clément",
+      "24-11": "Flora",
+      "25-11": "Catherine",
+      "26-11": "Delphine",
+      "27-11": "Virgil",
+      "28-11": "Sosthène",
+      "29-11": "Saturnin",
+      "30-11": "André",
+      "01-12": "Florence",
+      "02-12": "Viviane",
+      "03-12": "François-Xavier",
+      "04-12": "Barbara",
+      "05-12": "Gérald",
+      "06-12": "Nicolas",
+      "07-12": "Ambroise",
+      "08-12": "Romaric",
+      "09-12": "Léocadie",
+      "10-12": "Eulalie",
+      "11-12": "Daniel",
+      "12-12": "Corentin",
+      "13-12": "Lucie",
+      "14-12": "Odile",
+      "15-12": "Ninon",
+      "16-12": "Adélaïde",
+      "17-12": "Gaël",
+      "18-12": "Gatien",
+      "19-12": "Théa",
+      "20-12": "Isaac",
+      "21-12": "Perrine",
+      "22-12": "Adam",
+      "23-12": "Armand",
+      "24-12": "Adèle",
+      "25-12": "Emmanuel<br>Noël 🎄",
+      "26-12": "Étienne",
+      "27-12": "Fabiola",
+      "28-12": "Gaspard",
+      "29-12": "David",
+      "30-12": "Roger",
+      "31-12": "Sylvestre",
+
+      // Événements saisonniers (qui peuvent être ajoutés au nom du saint du jour si pertinent)
+      "20-03": "Herbert<br>🌸<i> Équinoxe de Printemps</i>",
+      "21-06": "Rodolphe / Fête des Pères<br>🌞<i> Solstice d'Été</i>",
+      "23-09": "Constant<br>🍂<i> Équinoxe d'Automne</i>",
+      "21-12": "Pierre Canisius<br>❄️<i> Solstice d'Hiver</i>"
+    };
+
+    // Jours fériés pour 2026. Les dates qui varient annuellement sont calculées.
+    // Les calculs pour Pâques, Ascension, Pentecôte sont gérés dans la fonction getJoursFeriesPourAnnee.
+    const joursFeriesFixes = [
+      "01-01", // Jour de l'an
+      "05-04", // Pâques
+      "06-04", // Lundi de Pâques
+      "01-05", // Fête du travail
+      "08-05", // Victoire 1945
+      "14-05", // Ascension
+      "24-05", // Pentecôte
+      "25-05", // Lundi de Pentecôte
+      "14-07", // Fête nationale
+      "15-08", // Assomption
+      "01-11", // Toussaint
+      "11-11", // Armistice
+      "25-12"  // Noël
+    ];
+
+    function calculerDatePaques(annee) {
+        const a = annee % 19;
+        const b = Math.floor(annee / 100);
+        const c = annee % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + d + 7) / 12);
+        const g = Math.floor((b - d - f + 21) % 30);
+        const h = Math.floor((g + Math.floor(g / 28) + 5 - g % 28) % 4);
+        const i = Math.floor((annee + Math.floor(annee / 4) + g + h + 2) % 7);
+        const jourPaques = 28 - g - h + i;
+        const moisPaques = 3 + Math.floor((g + h - i + jourPaques) / 31);
+        const jour = jourPaques;
+        const mois = moisPaques;
+        return { jour, mois };
+    }
+
+    function getJoursFeriesPourAnnee(annee) {
+        const datePaques = calculerDatePaques(annee);
+        const paquesJour = datePaques.jour.toString().padStart(2, '0');
+        const paquesMois = datePaques.mois.toString().padStart(2, '0');
+
+        const lundiPaquesDate = new Date(annee, datePaques.mois - 1, datePaques.jour + 1);
+        const lundiPaquesJour = lundiPaquesDate.getDate().toString().padStart(2, '0');
+        const lundiPaquesMois = (lundiPaquesDate.getMonth() + 1).toString().padStart(2, '0');
+
+        const ascensionDate = new Date(annee, datePaques.mois - 1, datePaques.jour + 39); // +39 jours après Pâques
+        const ascensionJour = ascensionDate.getDate().toString().padStart(2, '0');
+        const ascensionMois = (ascensionDate.getMonth() + 1).toString().padStart(2, '0');
+
+        const pentecoteDate = new Date(annee, datePaques.mois - 1, datePaques.jour + 49); // +49 jours après Pâques
+        const pentecoteJour = pentecoteDate.getDate().toString().padStart(2, '0');
+        const pentecoteMois = (pentecoteDate.getMonth() + 1).toString().padStart(2, '0');
+
+        const lundiPentecoteDate = new Date(annee, pentecoteDate.getMonth(), pentecoteDate.getDate() + 1);
+        const lundiPentecoteJour = lundiPentecoteDate.getDate().toString().padStart(2, '0');
+        const lundiPentecoteMois = (lundiPentecoteDate.getMonth() + 1).toString().padStart(2, '0');
+
+        return [
+            ...joursFeriesFixes,
+            `${paquesJour}-${paquesMois}`,
+            `${lundiPaquesJour}-${lundiPaquesMois}`,
+            `${ascensionJour}-${ascensionMois}`,
+            `${pentecoteJour}-${pentecoteMois}`,
+            `${lundiPentecoteJour}-${lundiPentecoteMois}`
+        ];
+    }
+
+    // Définir l'année pour l'éphéméride
+    const anneeActuelle = 2026;
+    const joursFeriesAnnee = getJoursFeriesPourAnnee(anneeActuelle);
+
+    function mettreAJourEphéméride() {
+        // Mettre la date du jour pour l'affichage. Pour tester une date spécifique, décommentez et modifiez la ligne suivante :
+        // const today = new Date(2026, 6, 14); // Exemple pour le 14 Juillet 2026
+        const today = new Date(); // Utilise la date actuelle du système
+
+        const jourSemaineIndex = today.getDay(); // 0 pour Dimanche, 1 pour Lundi, etc.
+        const jourSemaine = jours[jourSemaineIndex];
+        const jour = today.getDate().toString().padStart(2, '0');
+        const moisIndex = today.getMonth();
+        const annee = today.getFullYear();
+        const dateCle = `${jour}-${(moisIndex + 1).toString().padStart(2, '0')}`;
+
+        document.getElementById('dayName').textContent = jourSemaine;
+        document.getElementById('dateText').textContent = `${jour} ${mois[moisIndex]} ${annee}`;
+
+        let nomEvenement = "";
+        let classesSaint = [];
+        let estFerie = false;
+
+        // Vérifier si la date est un jour férié
+        if (joursFeriesAnnee.includes(dateCle)) {
+            classesSaint.push('ferie');
+            estFerie = true;
+            
+            // Associer le nom du jour férié s'il existe dans les saints (pour les fêtes spéciales)
+            if (saints[dateCle]) {
+                nomEvenement = saints[dateCle];
+            } else {
+                // Gestion des jours fériés sans nom spécifique dans la liste des saints
+                if (dateCle === "01-01") nomEvenement = "Jour de l'An";
+                else if (dateCle === "05-04") nomEvenement = "Pâques"; // Le nom peut varier selon la langue et la date exacte
+                else if (dateCle === "06-04") nomEvenement = "Lundi de Pâques";
+                else if (dateCle === "14-05") nomEvenement = "Ascension";
+                else if (dateCle === "24-05") nomEvenement = "Pentecôte";
+                else if (dateCle === "25-05") nomEvenement = "Lundi de Pentecôte";
+                else if (dateCle === "14-07") nomEvenement = "Fête Nationale";
+                else if (dateCle === "15-08") nomEvenement = "Assomption";
+                else if (dateCle === "01-11") nomEvenement = "Toussaint";
+                else if (dateCle === "11-11") nomEvenement = "Armistice";
+                else if (dateCle === "25-12") nomEvenement = "Noël";
+            }
+        }
+
+        // Vérifier les noms de saints ou événements spécifiques à la date
+        if (saints[dateCle]) {
+            // Si ce n'est pas déjà un jour férié, ajouter le nom du saint/événement
+            if (!nomEvenement) {
+                nomEvenement = saints[dateCle];
+            }
+            // Si c'est un événement saisonnier, ajouter la classe 'saison'
+            if (dateCle === "20-03" || dateCle === "21-06" || dateCle === "23-09" || dateCle === "21-12") {
+                classesSaint.push('saison');
+                // S'assurer que les émojis sont bien inclus si présents dans le nom du saint/événement
+                if (saints[dateCle].includes("🌸") || saints[dateCle].includes("🌞") || saints[dateCle].includes("🍂") || saints[dateCle].includes("❄️")) {
+                    // Rien à faire, ils sont déjà dans la chaîne
+                } else {
+                    // Ajouter l'émoji s'il n'y est pas et que c'est un événement saisonnier
+                    if (dateCle === "20-03") nomEvenement = nomEvenement.replace("Équinoxe de Printemps", "🌸 Équinoxe de Printemps");
+                    else if (dateCle === "21-06") nomEvenement = nomEvenement.replace("Solstice d'Été", "🌞 Solstice d'Été");
+                    else if (dateCle === "23-09") nomEvenement = nomEvenement.replace("Équinoxe d'Automne", "🍂 Équinoxe d'Automne");
+                    else if (dateCle === "21-12") nomEvenement = nomEvenement.replace("Solstice d'Hiver", "❄️ Solstice d'Hiver");
+                }
+            }
+        } else if (!nomEvenement) {
+            // Si ce n'est ni un jour férié ni un saint/événement connu
+            nomEvenement = "Pas d'événement particulier";
+        }
+
+        // Mettre à jour le contenu HTML
+        document.getElementById('saintName').innerHTML = nomEvenement;
+        document.getElementById('saintName').className = 'saint ' + classesSaint.join(' ');
+        
+        // ⭐ AJOUT : Appliquer la classe 'ferie' au jour de la semaine si c'est férié
+        if (estFerie) {
+            document.getElementById('dayName').classList.add('ferie');
+        } else {
+            document.getElementById('dayName').classList.remove('ferie');
+        }
+
+        // ⭐ AJOUT : Appliquer la classe 'dimanche-rouge' au jour de la semaine s'il s'agit d'un dimanche
+        if (jourSemaineIndex === 0) { // 0 correspond à Dimanche dans le tableau `jours`
+            document.getElementById('dayName').classList.add('dimanche-rouge');
+        } else {
+            document.getElementById('dayName').classList.remove('dimanche-rouge');
+        }
+    }
+
+    // Mettre à jour l'éphéméride au chargement de la page
+    mettreAJourEphéméride();
+
+    // Optionnel : mettre à jour toutes les secondes si vous voulez un suivi en temps réel (rarement nécessaire pour une éphéméride)
+    // setInterval(mettreAJourEphéméride, 1000);
+
+  </script>
+
+</body>
+</html>
