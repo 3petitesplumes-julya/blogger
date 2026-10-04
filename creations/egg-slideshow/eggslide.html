@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diaporama d'Œufs</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .slideshow-container {
+      max-width: 700px;
+      position: relative;
+      margin: 20px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      display: grid;
+    }
+
+    .slide {
+      grid-area: 1 / 1;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .controls {
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .controls button {
+      background-color: #f2bf48;
+      color: brown;
+      border: none;
+      padding: 12px 25px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .controls button:hover {
+      background-color: #725208;
+	  color: #f7bd4d;
+    }
+
+    #pauseBtn {
+      background-color: #c03705;
+      color: #f2bf48;
+    }
+
+    #pauseBtn:hover {
+      background-color: #e6772a;
+    }
+
+    #playBtn.paused {
+      background-color: #c03705;
+      color: #fbcb7a;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slideshow-container">
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/titre-slider.jpg" alt="Titre"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/A.jpg" alt="Style Fabergé"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/B.jpg" alt="Style asiatique"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/C.jpg" alt="Œuf C"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/D.jpg" alt="Œuf D"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/E.jpg" alt="Œuf E"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/F.jpg" alt="Œuf F"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/creations/egg-slideshow/fin.jpg" alt="Fin"></div>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" onclick="toggleSlides()">Play</button>
+    <button id="pauseBtn" onclick="pauseSlides()">Pause</button>
+  </div>
+
+  <script>
+    let slideIndex = 0;
+    let slideInterval = null;
+    const delay = 4000;
+    const slides = document.querySelectorAll('.slide');
+    let isPlaying = false;
+    let hasFinished = false;
+
+    // Initialisation
+    slides.forEach((slide, index) => {
+      if (index === 0) {
+        slide.classList.add('active');
+      }
+    });
+
+    function showSlide(n) {
+      slides.forEach(slide => {
+        slide.classList.remove('active');
+      });
+      slides[n].classList.add('active');
+    }
+
+    function nextSlide() {
+      slideIndex++;
+      if (slideIndex >= slides.length) {
+        slideIndex = slides.length - 1;
+        pauseSlides();
+        hasFinished = true;
+        document.getElementById('playBtn').classList.add('paused');
+        return;
+      }
+      showSlide(slideIndex);
+    }
+
+    function startSlides() {
+      if (slideInterval === null) {
+        if (hasFinished) {
+          // Si on a terminé, on recommence depuis le début
+          slideIndex = 0;
+          hasFinished = false;
+        }
+        showSlide(slideIndex);
+        slideInterval = setInterval(nextSlide, delay);
+        isPlaying = true;
+      }
+    }
+
+    function pauseSlides() {
+      clearInterval(slideInterval);
+      slideInterval = null;
+      isPlaying = false;
+    }
+
+    function toggleSlides() {
+      if (isPlaying) {
+        pauseSlides();
+        document.getElementById('playBtn').classList.add('paused');
+      } else {
+        startSlides();
+        document.getElementById('playBtn').classList.remove('paused');
+      }
+    }
+
+    // Démarrer automatiquement (optionnel)
+    // startSlides();
+  </script>
+
+</body>
+</html>
