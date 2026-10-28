@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Horloge de Noël balancier🎄</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      background: transparent;
+      padding: 20px 0;
+    }
+
+    /* ═══════════════════════════════════════
+       WRAPPER GLOBAL (même principe que l'horloge d'été)
+       Centre du cadran = (249, 310)
+       ═══════════════════════════════════════ */
+    #horloge-wrapper {
+      --w: 500px;                       /* largeur de l'horloge */
+      position: relative;
+      width: 500px;
+      height: 900px;
+    }
+
+    /* ── Image de l'horloge (couronne + cadran + pendule) ── */
+    #cadran-fond {
+      position: absolute;
+      left: 0; top: 0;
+      width: 500px; height: 900px;
+      z-index: 1;
+    }
+
+    /* ── Index des minutes (60 barres) ── */
+    #minutes {
+      --ton: #3b2f1e;                   /* couleur des barres */
+      position: absolute;
+      left: 249px; top: 310px;
+      width: 304px; height: 304px;      /* bord extérieur des barres */
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+	
+    #minutes .barre {
+      position: absolute; inset: 0;
+      transform: rotate(calc(var(--i) * 6deg));
+    }
+    #minutes .barre::before {
+      content: "";
+      position: absolute; 
+	  top: 0;
+	  left: 50%;
+      width: 1.5px;
+	  height: 6px;
+      transform: translateX(-50%);
+      background: var(--ton);
+    }
+    #minutes .heure::before { width: 3px; height: 10px; }
+
+    /* ── Chiffres romains ── */
+    #chiffres {
+      position: absolute;
+      left: 249px; top: 310px;
+      width: 55%; aspect-ratio: 1;      /* ← ton réglage à 55 % */
+      transform: translate(-50%, -50%);
+      font-family: "Times New Roman", Times, serif;
+      font-size: calc(var(--w) * 0.0459);
+      color: #1a1a1a;
+      z-index: 3;
+    }
+    #chiffres span {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* ── Aiguilles : pivot au centre du cadran ──
+       Même logique que l'été : un calque de taille 0 posé sur le centre,
+       chaque aiguille pivote autour de sa base (transform-origin: 50% 100%) */
+    #aiguilles-layer {
+      position: absolute;
+      left: 249px; top: 310px;
+      width: 0; height: 0;
+      z-index: 4;
+    }
+    .aiguille {
+      position: absolute;
+      transform-origin: 50% 100%;
+      filter: drop-shadow(1px 2px 1.5px rgba(0, 0, 0, .35));
+    }
+    .aiguille .lame {
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, #7a5a14, #b6915c 50%, #7a5a14);
+    }
+    #aiguille-heures {
+      width: 12px; height: 102px;
+      left: -6px; top: -102px;
+    }
+    #aiguille-heures .lame {
+      clip-path: polygon(50% 0, 100% 62%, 62% 100%, 38% 100%, 0 62%);
+    }
+    #aiguille-minutes {
+      width: 8px; height: 148px;
+      left: -4px; top: -148px;
+    }
+    #aiguille-minutes .lame {
+      clip-path: polygon(50% 0, 100% 78%, 60% 100%, 40% 100%, 0 78%);
+    }
+
+    /* ── Trotteuse : fine, rouge, avec une petite perle près de la pointe ── */
+    #trotteuse-layer {
+      position: absolute;
+      left: 249px; top: 310px;
+      width: 0; height: 0;
+      z-index: 5;
+    }
+    #trotteuse {
+      position: absolute;
+      width: 2px; height: 162px;        /* 130 de long + 22 de contrepoids */
+      left: -1px; top: -130px;
+      transform-origin: 1px 130px;      /* pivot = centre du cadran */
+      background: #b3202a;
+      filter: drop-shadow(1px 2px 1.5px rgba(0, 0, 0, .3));
+    }
+	
+    #trotteuse::after {
+      content: "";
+      position: absolute;
+      left: 50%; top: 4px;
+      width: 9px; height: 9px;
+      margin-left: -4.5px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ff7a82, #b3202a 60%, #7d1219);
+    }
+	
+
+    /* ── Bouton central or ── */
+    #bouton {
+      position: absolute;
+	  width: 20px; height: 20px;
+      left: 239px; top: 303px;
+      z-index: 6;
+    }
+	
+   /* ═══════════════════════════════════════
+       BALANCIER — derrière tout (z=0)
+       Pivot = centre du cadran = (250, 390)
+       ═══════════════════════════════════════ */
+    #balancier-container {
+      position: absolute;
+      left: 249px;
+      top: 310px;
+      width: 0; height: 0;
+      z-index: 0;
+    }
+    #balancier-img {
+      position: absolute;
+      width: 140px;
+      left: -70px;
+      top: 0;
+      transform-origin: 70px 0px;
+      animation: swing 3s ease-in-out infinite;
+    }
+    @keyframes swing {
+      0%   { transform: rotate(-14deg); }
+      50%  { transform: rotate( 14deg); }
+      100% { transform: rotate(-14deg); }
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="horloge-wrapper">
+
+  <!-- BALANCIER -->
+  <div id="balancier-container">
+    <img id="balancier-img" src="https://3petitesplumes-julya.github.io/blogger/xmas/clock/pendulum.png" alt="balancier">
+  </div>
+
+  <!-- horloge -->
+  <img id="cadran-fond" src="https://3petitesplumes-julya.github.io/blogger/xmas/clock/fondxmas.png" alt="Horloge de Noël">
+
+  <div id="minutes"></div>
+  <div id="chiffres"></div>
+
+  <div id="aiguilles-layer">
+    <div id="aiguille-minutes" class="aiguille"><div class="lame"></div></div>
+    <div id="aiguille-heures"  class="aiguille"><div class="lame"></div></div>
+  </div>
+
+  <div id="trotteuse-layer">
+    <div id="trotteuse"></div>
+  </div>
+
+  <div id="bouton">
+    <img src="https://3petitesplumes-julya.github.io/blogger/xmas/clock/bouton.png" alt="bouton">
+  </div>
+  
+
+</div>
+
+<script>
+  // ── 1) Chiffres romains : [chiffre, décalage horizontal, décalage vertical]
+  //    mesurés sur ta maquette (image de 800 px de large)
+  const chiffres = [
+    ["XII",   -6, -362], ["I",   182, -312], ["II",  317, -182], ["III", 366,    0],
+    ["IV",   314,  184], ["V",   190,  312], ["VI",    3,  371], ["VII", -184,  321],
+    ["VIII", -298, 186], ["IX", -361,    6], ["X",  -316, -172], ["XI",  -186, -312]
+  ];
+  const zone = document.getElementById("chiffres");
+  for (const [texte, dx, dy] of chiffres) {
+    const s = document.createElement("span");
+    s.textContent = texte;
+    s.style.left = (50 + dx / 8) + "%";
+    s.style.top  = (50 + dy / 8) + "%";
+    zone.appendChild(s);
+  }
+
+  // ── 2) Index des minutes : 60 barres, une plus marquée toutes les 5 minutes
+  const zoneMinutes = document.getElementById("minutes");
+  for (let i = 0; i < 60; i++) {
+    const b = document.createElement("div");
+    b.className = "barre" + (i % 5 === 0 ? " heure" : "");
+    b.style.setProperty("--i", i);
+    zoneMinutes.appendChild(b);
+  }
+
+  // ── 3) Aiguilles : mêmes calculs que ton horloge d'été
+  const aiguilleH = document.getElementById("aiguille-heures");
+  const aiguilleM = document.getElementById("aiguille-minutes");
+  const trotteuse = document.getElementById("trotteuse");
+
+  function updateClock() {
+    const now     = new Date();
+    const hours   = now.getHours() % 12;
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+ 
+
+    const degH = ((hours * 3600 + minutes * 60 + seconds) / 43200) * 360;
+    const degM = ((minutes * 60 + seconds) / 3600) * 360;
+    const degS = seconds * 6;   // 6° par seconde = pile sur chaque barre
+
+    aiguilleH.style.transform = `rotate(${degH}deg)`;
+    aiguilleM.style.transform = `rotate(${degM}deg)`;
+    trotteuse.style.transform = `rotate(${degS}deg)`;
+  }
+
+  updateClock();
+// Se recale sur le début de chaque seconde (évite aussi la dérive de setInterval)
+function tick() {
+  updateClock();
+  setTimeout(tick, 1000 - (Date.now() % 1000) + 20);
+}
+tick();
+</script>
+
+</body>
+</html>
