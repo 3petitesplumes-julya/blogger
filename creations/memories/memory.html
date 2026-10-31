@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #video1 {
+        position: relative;
+        width: 100%;
+        max-width: 290px;
+        height: 436px;
+        background-image: url("https://3petitesplumes-julya.github.io/blogger/creations/memories/cadretext.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin: 0 auto;
+        display: block;
+        box-sizing: border-box;
+      }
+      
+      #video1 video {
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 290px;
+        height: 436px;
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="video1">
+      <video width="290" height="436" autoplay loop muted>
+        <source src="https://3petitesplumes-julya.github.io/blogger/creations/memories/memory.mp4" type="video/mp4">
+        Ton navigateur ne supporte pas la balise vidéo.
+      </video>
+    </div>
+  </body>
+</html>
