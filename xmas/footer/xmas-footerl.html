@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>footer train</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      background: transparent;
+      overflow: hidden; /* Supprime les barres de défilement */
+      width: 1316px;
+      height: 756px;
+    }
+    
+    .container {
+      position: relative;
+      width: 1316px;
+      height: 756px;
+    }
+    
+    .frame-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1316px;
+      height: 756px;
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+    }
+    
+    .video-wrapper {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 1280px;
+      height: 720px;
+      z-index: 1;
+    }
+    
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img 
+      src="https://3petitesplumes-julya.github.io/blogger/xmas/footer/cadre.png" 
+      alt="Cadre" 
+      class="frame-image"
+    >
+    
+    <div class="video-wrapper">
+      <video autoplay loop muted playsinline>
+        <source src="https://3petitesplumes-julya.github.io/blogger/xmas/footer/train.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</body>
+</html>
