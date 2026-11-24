@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La boutique de Mei</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .slideshow-container {
+      max-width: 700px;
+      position: relative;
+      margin: 10px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      display: grid;
+    }
+
+    .slide {
+      grid-area: 1 / 1;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .controls {
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .controls button {
+      background-color: #9B1516;
+      color: #dae0da;
+      border: 1px #006F00;
+      padding: 12px 25px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .controls button:hover {
+      background-color: #dae0da;
+	  border: 1px #9B1516
+	  color: #006F00;
+    }
+
+    #pauseBtn {
+      background-color: #10a549;
+      color: #f2bf48;
+    }
+
+    #pauseBtn:hover {
+      background-color: #dae0da;
+    }
+
+    #playBtn.paused {
+      background-color: #006f00;
+      color: #10a549;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slideshow-container">
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/page1.jpg" alt="Titre"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/bague.jpg" alt="Bague"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/boucles.jpg" alt="Boucles-d-oreille"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/bracelets.jpg" alt="Bracelets"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/braceletxmas.jpg" alt="Bracelet-xmas"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/carnet.jpg" alt="Carnet"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/markpage.jpg" alt="Marque-page"></div>
+	<div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/markpage2.jpg" alt="Marque-page2"></div>
+	<div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/pins.jpg" alt="Pins"></div>
+	<div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/print.jpg" alt="Print"></div>
+	<div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/stikers.jpg" alt="Stickers"></div>
+    <div class="slide fade"><img src="https://3petitesplumes-julya.github.io/blogger/meistore/fin.jpg" alt="Fin"></div>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" onclick="startSlides()">Play</button>
+    <button id="pauseBtn" onclick="pauseSlides()">Pause</button>
+  </div>
+
+  <script>
+    let slideIndex = 0;
+    let slideInterval = null;
+    const delay = 4000;
+    const slides = document.querySelectorAll('.slide');
+    let isPlaying = false;
+    let hasFinished = false;
+
+    // Initialisation
+    slides.forEach((slide, index) => {
+      if (index === 0) {
+        slide.classList.add('active');
+      }
+    });
+
+    function showSlide(n) {
+      slides.forEach(slide => {
+        slide.classList.remove('active');
+      });
+      slides[n].classList.add('active');
+    }
+
+    function nextSlide() {
+      slideIndex++;
+      if (slideIndex >= slides.length) {
+        slideIndex = slides.length - 1;
+        pauseSlides();
+        hasFinished = true;
+        document.getElementById('playBtn').classList.add('paused');
+        return;
+      }
+      showSlide(slideIndex);
+    }
+
+    function startSlides() {
+      if (slideInterval === null) {
+	    document.getElementById('playBtn').classList.remove('paused');   // ← ligne ajoutée
+        if (hasFinished) {
+          // Si on a terminé, on recommence depuis le début
+          slideIndex = 0;
+          hasFinished = false;
+        }
+        showSlide(slideIndex);
+        slideInterval = setInterval(nextSlide, delay);
+        isPlaying = true;
+      }
+    }
+
+    function pauseSlides() {
+      clearInterval(slideInterval);
+      slideInterval = null;
+      isPlaying = false;
+    }
+
+    // Démarrer automatiquement (optionnel)
+    // startSlides();
+  </script>
+
+</body>
+</html>
